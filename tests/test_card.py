@@ -1,5 +1,5 @@
 import unittest
-from card import Card
+from doudizhu import Card
 
 
 class TestCard(unittest.TestCase):

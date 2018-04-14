@@ -1,5 +1,5 @@
 import unittest
-from doudizhu import Doudizhu, sort_cards, cards2str, str2cards
+from doudizhu import Doudizhu
 
 
 class TestDoudizhu(unittest.TestCase):
@@ -8,12 +8,6 @@ class TestDoudizhu(unittest.TestCase):
     def setUp(self):
         Doudizhu.init_doudizhu_dict()
         self.assertEqual(Doudizhu.TOTAL, 34152)
-
-    def test_sort_cards(self):
-        cards = '3-4-5-6-7-8-9-10-J-Q-K-A-2-BJ-CJ'
-        reverse_cards = str2cards(cards)[::-1]
-        rst = sort_cards(reverse_cards)
-        self.assertEqual(cards2str(rst), cards)
 
     def test_compare_cards(self):
         # cards_x, cards_y, expected_result

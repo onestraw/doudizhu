@@ -410,7 +410,7 @@ class Doudizhu(object):
                     Doudizhu.DATA[cards] = [(ct['name'], weight)]
                 else:
                     Doudizhu.DATA[cards].append((ct['name'], weight))
-        logging.info(Doudizhu.TOTAL)
+        logging.debug(Doudizhu.TOTAL)
 
     @staticmethod
     def print_multiple_types_cards():

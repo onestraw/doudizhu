@@ -21,6 +21,7 @@ class Card(object):
     """
 
     # the basics
+    STR_JOKERS = ['BJ', 'CJ']
     STR_RANKS = '3-4-5-6-7-8-9-10-J-Q-K-A-2-BJ-CJ'.split('-')
     INT_RANKS = range(15)
 
@@ -48,7 +49,7 @@ class Card(object):
 
     @staticmethod
     def new(string):
-        if string in Card.STR_RANKS[-2:]:
+        if Card.is_joker(string):
             return Card.CHAR_RANK_TO_INT_RANK[string]
 
         rank_char = string[:-1]
@@ -59,6 +60,10 @@ class Card(object):
         suit = suit_int << 4
 
         return suit | rank_int
+
+    @staticmethod
+    def is_joker(string):
+        return string in Card.STR_JOKERS
 
     @staticmethod
     def int_to_str(card_int):
@@ -75,6 +80,13 @@ class Card(object):
     def cards_without_suit(card_ints):
         no_suit_cards = [Card.rank_int_to_str(ci) for ci in card_ints]
         return '-'.join(no_suit_cards)
+
+    @staticmethod
+    def card_rank_to_real_card(card):
+        """give a string card rank, return four cards with suit"""
+        if Card.is_joker(card):
+            return [card]
+        return [card+suit for suit in Card.CHAR_SUIT_TO_INT_SUIT.keys()]
 
     @staticmethod
     def get_rank_int(card_int):
