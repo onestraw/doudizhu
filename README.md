@@ -10,6 +10,10 @@
 
 ### Installing
 
+`pip install doudizhu`
+
+or
+
 - git clone https://github.com/onestraw/doudizhu
 - cd doudizhu
 
