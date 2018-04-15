@@ -26,6 +26,7 @@ def new_game():
         result.append(group)
 
     result.append(all_cards)
+    result = [Card.sort_cards_by_rank_int(cards) for cards in result]
     return result
 
 

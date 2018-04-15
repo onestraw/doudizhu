@@ -82,6 +82,12 @@ class Card(object):
         return '-'.join(no_suit_cards)
 
     @staticmethod
+    def sort_cards_by_rank_int(card_ints):
+        def cmp_card(x, y):
+            return Card.get_rank_int(x) - Card.get_rank_int(y)
+        return sorted(card_ints, cmp=cmp_card, reverse=True)
+
+    @staticmethod
     def card_rank_to_real_card(card):
         """give a string card rank, return four cards with suit"""
         if Card.is_joker(card):
