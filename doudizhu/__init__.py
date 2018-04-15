@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import random
-from engine import Doudizhu
-from card import Card
+from .engine import Doudizhu
+from .card import Card
 
 
 Doudizhu.init_doudizhu_dict()
@@ -46,3 +46,6 @@ def cards_greater(cards_x, cards_y):
     cards_x_no_suit = Card.cards_without_suit(cards_x)
     cards_y_no_suit = Card.cards_without_suit(cards_y)
     return Doudizhu.cards_greater(cards_x_no_suit, cards_y_no_suit)
+
+
+__all__ = ['Card', 'new_game', 'check_card_type', 'cards_greater']
