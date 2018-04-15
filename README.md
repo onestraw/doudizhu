@@ -1,8 +1,8 @@
 # 斗地主引擎
 
-枚举了37种细分牌型，制作一个花色无关、顺序无关的字典，能够在O(1)时间内判断出牌是否有效，在O(1)时间内比较大小
+枚举了37种细分牌型，制作一个花色无关、顺序无关的字典，能够在O(1)时间内判断出牌是否有效，在O(1)时间内比较大小。
 
-扑克出牌是54张牌的组合，牌型和排列顺序无关，在斗地主游戏中除了两个王，花色也无关大小。
+扑克出牌是54张牌的组合，牌型和排列顺序无关，在斗地主游戏中，牌型及大小和花色无关，两个王不算对子。
 
 [详细文档](docs/engine.md)
 
@@ -15,7 +15,7 @@
 or
 
 - git clone https://github.com/onestraw/doudizhu
-- cd doudizhu
+- cd doudizhu && pip install .
 
 ### 开始一局游戏
 ```python
@@ -37,9 +37,9 @@ or
 
 ### 检查牌型
 ```python
->>> test_chain = [Card.new('3c'), Card.new('4d'), Card.new('5h'), Card.new('6s'), Card.new('7s'), Card.new('8h')]
+>>> test_chain = [Card.new(card_str) for card_str in ['3c', '4d', '5h', '6s', '7s', '8h']]
 >>>
->>> test_four_two = [Card.new('2c'), Card.new('2d'), Card.new('2h'), Card.new('2s'), Card.new('BJ'), Card.new('CJ')]
+>>> test_four_two = [Card.new(card_str) for card_str in ['2c', '2d', '2h', '2s', 'BJ', 'CJ']]
 >>>
 >>> doudizhu.check_card_type(test_four_two)
 (True, [('four_two_solo', 13)])
@@ -51,9 +51,9 @@ or
 
 ### 比较大小
 ```python
->>> chain = [Card.new('3c'), Card.new('4d'), Card.new('5h'), Card.new('6s'), Card.new('7s'), Card.new('8h'), Card.new('9h')]
->>> bomb = [Card.new('8h'), Card.new('8s'), Card.new('8d'), Card.new('8c')]
->>> rocket = [Card.new('BJ'), Card.new('CJ')]
+>>> chain = [Card.new(card_str) for card_str in ['3c', '4d', '5h', '6s', '7s', '8h', '9h']]
+>>> bomb = [Card.new(card_str) for card_str in ['8h', '8s', '8d', '8c']]
+>>> rocket = [Card.new(card_str) for card_str in ['BJ', 'CJ']]
 >>>
 >>> doudizhu.cards_greater(chain, chain)
 (False, 'solo_chain_7')
