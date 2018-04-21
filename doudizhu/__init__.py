@@ -49,4 +49,37 @@ def cards_greater(cards_x, cards_y):
     return Doudizhu.cards_greater(cards_x_no_suit, cards_y_no_suit)
 
 
-__all__ = ['Card', 'new_game', 'check_card_type', 'cards_greater']
+def list_greater_cards(cards_target, cards_candidate):
+    """ 对于目标牌组合cards_target
+    从候选牌cards_candidate中找出所有可以压制它的牌型
+    不区分花色，返回结果是一个字典{card_type:[greater_cards,],}
+    """
+    ct_no_suit = Card.cards_without_suit(cards_target)
+    cc_no_suit = Card.cards_without_suit(cards_candidate)
+    cards_gt = Doudizhu.list_greater_cards(ct_no_suit, cc_no_suit)
+
+    def render_suit(cards, candidate):
+        result = set()
+        candidate = set(candidate)
+        for card in cards.split('-'):
+            cards_suit = [Card.new(cs) for cs in
+                          Card.card_rank_to_real_card(card)]
+            for card_int in cards_suit:
+                if card_int in candidate and card_int not in result:
+                    result.add(card_int)
+                    break
+        return result
+
+    result = {}
+    for card_type, cards_list in cards_gt.iteritems():
+        result[card_type] = []
+        for cards in cards_list:
+            cards_with_suit = render_suit(cards, cards_candidate)
+            sorted_cards = Card.sort_cards_by_rank_int(list(cards_with_suit))
+            result[card_type].append(sorted_cards)
+
+    return result
+
+
+__all__ = ['Card', 'new_game', 'check_card_type',
+           'cards_greater', 'list_greater_cards']

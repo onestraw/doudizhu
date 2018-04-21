@@ -26,6 +26,17 @@ def cards2str(cards): return '-'.join(cards)
 def str2cards(string): return string.split('-')
 
 
+def str2cardmap(string):
+    cards = str2cards(string)
+    cardmap = {}
+    for c in cards:
+        if c in cardmap:
+            cardmap[c] += 1
+        else:
+            cardmap[c] = 1
+    return cardmap
+
+
 def sort_cards(cards):
     return sorted(cards, cmp=lambda x, y: CARD_IDX[x] - CARD_IDX[y])
 
@@ -390,6 +401,10 @@ class Doudizhu(object):
         todo: covert the key to binary format
     """
     DATA = {}
+    """
+        {type:{weight:[cards,]},}
+    """
+    TYPE_CARDS = {}
     TOTAL = 0
     INIT_FLAG = False
 
@@ -404,18 +419,27 @@ class Doudizhu(object):
                 logging.error(ct)
             Doudizhu.TOTAL += len(rst)
 
+            card_type = ct['name']
+            Doudizhu.TYPE_CARDS[card_type] = {}
             for item in rst:
                 cards, weight = item
                 if cards not in Doudizhu.DATA:
                     Doudizhu.DATA[cards] = [(ct['name'], weight)]
                 else:
                     Doudizhu.DATA[cards].append((ct['name'], weight))
+
+                if weight not in Doudizhu.TYPE_CARDS[card_type]:
+                    Doudizhu.TYPE_CARDS[card_type][weight] = [cards]
+                else:
+                    Doudizhu.TYPE_CARDS[card_type][weight].append(cards)
+
         logging.debug(Doudizhu.TOTAL)
 
     @staticmethod
     def print_multiple_types_cards():
         for cards, value in Doudizhu.DATA.iteritems():
-            if len(value) > 1:
+            if len(value) > 2 or \
+                    (len(value) > 1 and value[0][0] != value[1][0]):
                 print cards, value
 
     @staticmethod
@@ -464,11 +488,11 @@ class Doudizhu(object):
         """
         ok, type_x = Doudizhu.check_card_type(cards_x)
         if not ok:
-            return '{}: {}'.format(cards_x, type_x)
+            return False, '{}: {}'.format(cards_x, type_x)
 
         ok, type_y = Doudizhu.check_card_type(cards_y)
         if not ok:
-            return '{}: {}'.format(cards_y, type_y)
+            return False, '{}: {}'.format(cards_y, type_y)
 
         for tx in type_x:
             for ty in type_y:
@@ -476,6 +500,71 @@ class Doudizhu(object):
                 if not isinstance(flag, ValueError) and flag > 0:
                     return True, tx[0]
         return False, tx[0]
+
+    @staticmethod
+    def cards_contain(candidate_cardmap, cardmap):
+        for k, v in cardmap.iteritems():
+            if k not in candidate_cardmap:
+                return False
+            if candidate_cardmap[k] < v:
+                return False
+        return True
+
+    @staticmethod
+    def list_greater_cards(cards_target, cards_candidate):
+        """ 对于目标牌组合cards_target
+        从候选牌cards_candidate中找出所有可以压制它的牌型
+
+        1. 对于cards_taget同牌型的不同权重组合来说，按其最大权重计算
+        如target='3-3-3-3-2-2-2-2', candidate='5-5-5-5-6-6-6-6'),
+        这里target当作<四个2带2对3>，所以返回是：
+        {'bomb': ['5-5-5-5', '6-6-6-6']}
+
+        2. 对于candidate中一组牌可作不同组合压制cards_taget的场景，只返回一种组合
+        如target='3-3-3-3-4-4-4-4', candidate='5-5-5-5-6-6-6-6'),
+        <四个5带2对6>，<四个6带2对5> 均大于 <四个4带2对3>
+        只返回一次'5-5-5-5-6-6-6-6',
+        {'bomb': ['5-5-5-5', '6-6-6-6'], 'four_two_pair': ['5-5-5-5-6-6-6-6']}
+        """
+        ok, target_type = Doudizhu.check_card_type(cards_target)
+        if not ok:
+            logging.error('{}: {}'.format(cards_target, target_type))
+            return {}
+
+        # 对target_type去重，保留同type中weight最大的
+        tmp_dict = {}
+        for card_type, weight in target_type:
+            if card_type not in tmp_dict or weight > tmp_dict[card_type]:
+                tmp_dict[card_type] = weight
+        target_type = [(k, v) for k, v in tmp_dict.iteritems()]
+
+        # 按牌型大小依次判断是否可用bomb, rocket
+        if target_type[0][0] != 'rocket':
+            if target_type[0][0] != 'bomb':
+                target_type.append(('bomb', -1))
+            target_type.append(('rocket', -1))
+        elif target_type[0][0] != 'bomb':
+            target_type.append(('bomb', -1))
+
+        logging.debug('target_type: {}'.format(target_type))
+        candidate_cardmap = str2cardmap(cards_candidate)
+        cards_gt = {}
+        for card_type, weight in target_type:
+            weight_gt = [w for w in Doudizhu.TYPE_CARDS[card_type].keys()
+                         if w > weight]
+            if card_type not in cards_gt:
+                cards_gt[card_type] = []
+            logging.debug(weight_gt)
+            logging.debug(candidate_cardmap)
+            for w in sorted(weight_gt):
+                for w_cards in Doudizhu.TYPE_CARDS[card_type][w]:
+                    w_cardmap = str2cardmap(w_cards)
+                    if Doudizhu.cards_contain(candidate_cardmap, w_cardmap) \
+                            and w_cards not in cards_gt[card_type]:
+                        cards_gt[card_type].append(w_cards)
+            if not cards_gt[card_type]:
+                cards_gt.pop(card_type)
+        return cards_gt
 
 
 if __name__ == '__main__':
