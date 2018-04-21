@@ -66,3 +66,49 @@ or
 >>> doudizhu.cards_greater(rocket, bomb)
 (True, 'rocket')
 ```
+
+### 牌型提示
+```python
+>>> import doudizhu
+>>> from doudizhu import Card
+>>>
+>>> def CardStrListToCardIntList(cards):
+...     return [Card.new(card_str) for card_str in cards]
+...
+>>>
+>>> def PrettyPrint(cards_gt):
+...     for card_type, cards_list in cards_gt.iteritems():
+...         print 'card type: {}'.format(card_type)
+...         for card_int in cards_list:
+...             Card.print_pretty_cards(list(card_int))
+...
+>>>
+>>> cards_candidate = CardStrListToCardIntList(['CJ', 'Ah', 'As', 'Ac', 'Kh', 'Qs', 'Jc', '10h', '10s', '10c', '10d', '9h', '7c', '7d', '5c', '5s'])
+>>> cards_two = CardStrListToCardIntList(['Jh', 'Jc'])
+>>> cards_chain_solo = CardStrListToCardIntList(['5h', '6h', '7s', '8c', '9d'])
+>>> cards_trio_two = CardStrListToCardIntList(['6h', '6s', '6c', '3d', '3c'])
+>>>
+>>> PrettyPrint(doudizhu.list_greater_cards(cards_two, cards_candidate))
+card type: pair
+  [ A ♠ ] , [ A ❤ ]
+card type: bomb
+  [ 10 ♦ ] , [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ]
+>>>
+>>> PrettyPrint(doudizhu.list_greater_cards(cards_chain_solo, cards_candidate))
+card type: solo_chain_5
+  [ K ❤ ] , [ Q ♠ ] , [ J ♣ ] , [ 10 ❤ ] , [ 9 ❤ ]
+  [ A ❤ ] , [ K ❤ ] , [ Q ♠ ] , [ J ♣ ] , [ 10 ❤ ]
+card type: bomb
+  [ 10 ♦ ] , [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ]
+>>>
+>>> PrettyPrint(doudizhu.list_greater_cards(cards_trio_two, cards_candidate))
+card type: trio_pair
+  [ A ♠ ] , [ A ❤ ] , [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ]
+  [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ] , [ 5 ♠ ] , [ 5 ♣ ]
+  [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ] , [ 7 ♦ ] , [ 7 ♣ ]
+  [ A ♠ ] , [ A ❤ ] , [ A ♣ ] , [ 10 ♠ ] , [ 10 ❤ ]
+  [ A ♠ ] , [ A ❤ ] , [ A ♣ ] , [ 5 ♠ ] , [ 5 ♣ ]
+  [ A ♠ ] , [ A ❤ ] , [ A ♣ ] , [ 7 ♦ ] , [ 7 ♣ ]
+card type: bomb
+  [ 10 ♦ ] , [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ]
+```

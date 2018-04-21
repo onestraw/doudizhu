@@ -9,6 +9,27 @@ class TestDoudizhu(unittest.TestCase):
         Doudizhu.init_doudizhu_dict()
         self.assertEqual(Doudizhu.TOTAL, 34152)
 
+    def test_list_all_gt_cards(self):
+        # cards_target, cards_candidate, expected_result
+        test_cases = [
+            ('2', '3-K-BJ-CJ', {'solo': ['BJ', 'CJ'], 'rocket': ['BJ-CJ']}),
+            ('CJ', '2-2-BJ', {}),
+            ('J-Q-Q-Q', '2-2-2-2-3-BJ', {'trio_solo': ['2-2-2-BJ', '3-2-2-2'], 'bomb': ['2-2-2-2']}),
+            ('10-10-J-J-Q-Q', 'J-J-Q-Q-K-K-K-K-A-A-A-A', {'pair_chain_3': ['J-J-Q-Q-K-K', 'Q-Q-K-K-A-A'], 'bomb': ['K-K-K-K', 'A-A-A-A']}),
+            ('3-4-5-6-7', '3-4-5-6-7-8-9-10-J-Q-K-A-2-BJ-CJ', {'solo_chain_5': ['4-5-6-7-8', '5-6-7-8-9', '6-7-8-9-10', '7-8-9-10-J', '8-9-10-J-Q', '9-10-J-Q-K', '10-J-Q-K-A'], 'rocket': ['BJ-CJ']}),
+            ('3-3-3-3-2-2-2-2', '5-5-5-5-6-6-6-6', {'bomb': ['5-5-5-5', '6-6-6-6']}),
+            ('7-7-7-8-8-8-9-9-9-10-10-10', 'J-J-J-Q-Q-Q-K-K-K-A-A-A-3-3-3-Q-3', {'trio_chain_4': ['J-J-J-Q-Q-Q-K-K-K-A-A-A'], 'bomb': ['3-3-3-3', 'Q-Q-Q-Q'], 'trio_solo_chain_3': ['J-J-J-Q-Q-Q-K-K-K-A-A-A', '3-J-J-J-Q-Q-Q-K-K-K-A-A', '3-3-J-J-J-Q-Q-Q-K-K-K-A', '3-3-3-J-J-J-Q-Q-Q-K-K-K', '3-J-J-Q-Q-Q-K-K-K-A-A-A', '3-3-J-Q-Q-Q-K-K-K-A-A-A', '3-3-3-Q-Q-Q-K-K-K-A-A-A']}),
+            ('3-4-5-6-7', '3-4-5-6-7-9', {}),
+            ('3-4-5-6', '3-4-5-6-7-9', {}),
+        ]
+        for case in test_cases:
+            cards_target, cards_candidate, exp = case
+            result = Doudizhu.list_greater_cards(cards_target,
+                                                 cards_candidate)
+            print case, '--', result
+            self.assertEqual(result, exp)
+            print '#'*20
+
     def test_compare_cards(self):
         # cards_x, cards_y, expected_result
         test_cases = [
