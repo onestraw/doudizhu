@@ -11,7 +11,7 @@ with open('LICENSE') as f:
 
 setup(
     name='doudizhu',
-    version='0.1.3',
+    version='0.1.4',
     description='doudizhu engine',
     long_description=readme,
     url='https://github.com/onestraw/doudizhu',

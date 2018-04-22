@@ -62,6 +62,10 @@ class Card(object):
         return suit | rank_int
 
     @staticmethod
+    def card_ints_from_string(cards_str):
+        return [Card.new(card_str) for card_str in cards_str.split('-')]
+
+    @staticmethod
     def is_joker(string):
         return string in Card.STR_JOKERS
 
