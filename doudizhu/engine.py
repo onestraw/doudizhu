@@ -9,6 +9,8 @@
 import itertools
 import logging
 
+from doudizhu.compat import is_py3, cmp_to_key
+
 logging.basicConfig(level=logging.INFO)
 
 
@@ -38,6 +40,9 @@ def str2cardmap(string):
 
 
 def sort_cards(cards):
+    if is_py3:
+        return sorted(cards, key=cmp_to_key(
+            lambda x, y: CARD_IDX[x] - CARD_IDX[y]))
     return sorted(cards, cmp=lambda x, y: CARD_IDX[x] - CARD_IDX[y])
 
 
@@ -149,7 +154,7 @@ def enum_trio_solo():
     weight = 0
     for trio in CARD_TRIO:
         weight += 1
-        all_cards = set(CARDS) - set(trio)
+        all_cards = [card for card in CARDS if card != trio[0]]
         for card in all_cards:
             put_sorted_cards(result, trio + [card], weight)
 
@@ -172,8 +177,7 @@ def enum_trio_solo_chain(length):
         for chain in solo_chain:
             weight += 1
             trio_chain = order_repeat(chain, 3)
-            all_cards = set(CARDS) - set(chain)
-            avail_cards = all_cards - set(['BJ', 'CJ'])
+            avail_cards = [c for c in CARDS_NO_JOKERS if c not in set(chain)]
 
             # 1. select {BJ, CJ}
             it = itertools.combinations_with_replacement(avail_cards, length-2)
@@ -236,7 +240,7 @@ def enum_trio_pair_chain(length):
         for chain in solo_chain:
             weight += 1
             trio_chain = order_repeat(chain, 3)
-            avail_cards = set(CARDS_NO_JOKERS) - set(chain)
+            avail_cards = [c for c in CARDS_NO_JOKERS if c not in set(chain)]
 
             it = itertools.combinations_with_replacement(avail_cards, length)
             for e in it:
@@ -263,8 +267,7 @@ def enum_four_two_solo():
     weight = 0
     for four in CARD_FOUR:
         weight += 1
-        card = four[0]
-        all_cards = set(CARDS) - set([card])
+        all_cards = [card for card in CARDS if card != four[0]]
         it = itertools.combinations_with_replacement(all_cards, 2)
         for e in it:
             if e not in [('BJ', 'BJ'), ('CJ', 'CJ')]:
@@ -281,8 +284,7 @@ def enum_four_two_pair():
     weight = 0
     for four in CARD_FOUR:
         weight += 1
-        card = four[0]
-        all_cards = set(CARDS_NO_JOKERS) - set([card])
+        all_cards = [card for card in CARDS_NO_JOKERS if card != four[0]]
         it = itertools.combinations_with_replacement(all_cards, 2)
         for e in it:
             put_sorted_cards(result, four + order_repeat(e, 2), weight)
@@ -437,10 +439,10 @@ class Doudizhu(object):
 
     @staticmethod
     def print_multiple_types_cards():
-        for cards, value in Doudizhu.DATA.iteritems():
+        for cards, value in iter(Doudizhu.DATA.items()):
             if len(value) > 2 or \
                     (len(value) > 1 and value[0][0] != value[1][0]):
-                print cards, value
+                print(cards, value)
 
     @staticmethod
     def check_card_type(cards):
@@ -503,7 +505,7 @@ class Doudizhu(object):
 
     @staticmethod
     def cards_contain(candidate_cardmap, cardmap):
-        for k, v in cardmap.iteritems():
+        for k, v in iter(cardmap.items()):
             if k not in candidate_cardmap:
                 return False
             if candidate_cardmap[k] < v:
@@ -536,7 +538,7 @@ class Doudizhu(object):
         for card_type, weight in target_type:
             if card_type not in tmp_dict or weight > tmp_dict[card_type]:
                 tmp_dict[card_type] = weight
-        target_type = [(k, v) for k, v in tmp_dict.iteritems()]
+        target_type = [(k, v) for k, v in iter(tmp_dict.items())]
 
         # 按牌型大小依次判断是否可用bomb, rocket
         if target_type[0][0] != 'rocket':
@@ -565,8 +567,3 @@ class Doudizhu(object):
             if not cards_gt[card_type]:
                 cards_gt.pop(card_type)
         return cards_gt
-
-
-if __name__ == '__main__':
-    Doudizhu.init_doudizhu_dict()
-    Doudizhu.print_multiple_types_cards()

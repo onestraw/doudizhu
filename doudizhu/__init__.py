@@ -71,7 +71,7 @@ def list_greater_cards(cards_target, cards_candidate):
         return result
 
     result = {}
-    for card_type, cards_list in cards_gt.iteritems():
+    for card_type, cards_list in iter(cards_gt.items()):
         result[card_type] = []
         for cards in cards_list:
             cards_with_suit = render_suit(cards, cards_candidate)

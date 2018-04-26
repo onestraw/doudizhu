@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from doudizhu.compat import is_py3, cmp_to_key
+
 
 class Card(object):
     """
@@ -37,7 +39,7 @@ class Card(object):
 
     # for pretty printing
     PRETTY_SUITS = {
-        0: '',
+        0: u''.encode('utf-8'),
         1: u"\u2660".encode('utf-8'),  # spades
         2: u"\u2764".encode('utf-8'),  # hearts
         4: u"\u2666".encode('utf-8'),  # diamonds
@@ -89,6 +91,8 @@ class Card(object):
     def sort_cards_by_rank_int(card_ints):
         def cmp_card(x, y):
             return Card.get_rank_int(x) - Card.get_rank_int(y)
+        if is_py3:
+            return sorted(card_ints, key=cmp_to_key(cmp_card), reverse=True)
         return sorted(card_ints, cmp=cmp_card, reverse=True)
 
     @staticmethod
@@ -96,7 +100,7 @@ class Card(object):
         """give a string card rank, return four cards with suit"""
         if Card.is_joker(card):
             return [card]
-        return [card+suit for suit in Card.CHAR_SUIT_TO_INT_SUIT.keys()]
+        return [card+suit for suit in ['s', 'h', 'd', 'c']]
 
     @staticmethod
     def get_rank_int(card_int):
@@ -132,14 +136,14 @@ class Card(object):
 
         r = Card.STR_RANKS[rank_int]
 
-        return " [ " + r + " " + s + " ] "
+        return u" [ {} {} ]".format(r, s.decode("utf-8"))
 
     @staticmethod
     def print_pretty_card(card_int):
         """
         Expects a single integer as input
         """
-        print Card.int_to_pretty_str(card_int)
+        print(Card.int_to_pretty_str(card_int))
 
     @staticmethod
     def print_pretty_cards(card_ints):
@@ -149,9 +153,8 @@ class Card(object):
         output = " "
         for i in range(len(card_ints)):
             c = card_ints[i]
+            output += Card.int_to_pretty_str(c)
             if i != len(card_ints) - 1:
-                output += Card.int_to_pretty_str(c) + ","
-            else:
-                output += Card.int_to_pretty_str(c) + " "
+                output += ","
 
-        print output
+        print(output)

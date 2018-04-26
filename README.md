@@ -90,8 +90,8 @@
 ```python
 >>> from doudizhu import Card, list_greater_cards
 >>> def PrettyPrint(cards_gt):
-...     for card_type, cards_list in cards_gt.iteritems():
-...         print 'card type: {}'.format(card_type)
+...     for card_type, cards_list in cards_gt.items():
+...         print('card type: {}'.format(card_type))
 ...         for card_int in cards_list:
 ...             Card.print_pretty_cards(list(card_int))
 ...
@@ -102,25 +102,25 @@
 >>>
 >>> PrettyPrint(list_greater_cards(cards_two, cards_candidate))
 card type: pair
-  [ A ♠ ] , [ A ❤ ]
+  [ A ❤ ], [ A ♠ ]
 card type: bomb
-  [ 10 ♦ ] , [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ]
+  [ 10 ♣ ], [ 10 ❤ ], [ 10 ♦ ], [ 10 ♠ ]
 >>>
 >>> PrettyPrint(list_greater_cards(cards_chain_solo, cards_candidate))
 card type: solo_chain_5
-  [ K ❤ ] , [ Q ♠ ] , [ J ♣ ] , [ 10 ❤ ] , [ 9 ❤ ]
-  [ A ❤ ] , [ K ❤ ] , [ Q ♠ ] , [ J ♣ ] , [ 10 ❤ ]
+  [ K ❤ ], [ Q ♠ ], [ J ♣ ], [ 10 ♠ ], [ 9 ❤ ]
+  [ A ♠ ], [ K ❤ ], [ Q ♠ ], [ J ♣ ], [ 10 ♠ ]
 card type: bomb
-  [ 10 ♦ ] , [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ]
+  [ 10 ♣ ], [ 10 ❤ ], [ 10 ♦ ], [ 10 ♠ ]
 >>>
 >>> PrettyPrint(list_greater_cards(cards_trio_two, cards_candidate))
 card type: trio_pair
-  [ A ♠ ] , [ A ❤ ] , [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ]
-  [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ] , [ 5 ♠ ] , [ 5 ♣ ]
-  [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ] , [ 7 ♦ ] , [ 7 ♣ ]
-  [ A ♠ ] , [ A ❤ ] , [ A ♣ ] , [ 10 ♠ ] , [ 10 ❤ ]
-  [ A ♠ ] , [ A ❤ ] , [ A ♣ ] , [ 5 ♠ ] , [ 5 ♣ ]
-  [ A ♠ ] , [ A ❤ ] , [ A ♣ ] , [ 7 ♦ ] , [ 7 ♣ ]
+  [ 10 ❤ ], [ 10 ♦ ], [ 10 ♠ ], [ 5 ♣ ], [ 5 ♠ ]
+  [ 10 ❤ ], [ 10 ♦ ], [ 10 ♠ ], [ 7 ♣ ], [ 7 ♦ ]
+  [ A ❤ ], [ A ♠ ], [ 10 ❤ ], [ 10 ♦ ], [ 10 ♠ ]
+  [ A ❤ ], [ A ♣ ], [ A ♠ ], [ 5 ♣ ], [ 5 ♠ ]
+  [ A ♣ ], [ A ❤ ], [ A ♠ ], [ 7 ♣ ], [ 7 ♦ ]
+  [ A ❤ ], [ A ♣ ], [ A ♠ ], [ 10 ❤ ], [ 10 ♠ ]
 card type: bomb
-  [ 10 ♦ ] , [ 10 ♠ ] , [ 10 ♣ ] , [ 10 ❤ ]
+  [ 10 ♣ ], [ 10 ❤ ], [ 10 ♦ ], [ 10 ♠ ]
 ```
