@@ -1,6 +1,5 @@
 test:
-	PYTHONPATH=$PYTHONPATH:./ python2 -m pytest -s tests/ --showlocals
-	PYTHONPATH=$PYTHONPATH:./ python3 -m pytest -s tests/ --showlocals
+	PYTHONPATH=$PYTHONPATH:./ python -m pytest -s tests/ --showlocals
 
 check:
 	flake8 doudizhu/*.py

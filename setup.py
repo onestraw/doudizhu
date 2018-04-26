@@ -11,7 +11,7 @@ with open('LICENSE') as f:
 
 setup(
     name='doudizhu',
-    version='0.1.4',
+    version='0.1.5',
     description='doudizhu engine',
     long_description=readme,
     url='https://github.com/onestraw/doudizhu',
@@ -26,4 +26,8 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
         'Programming Language :: Python :: 2',
-    ],)
+        'Programming Language :: Python :: 3',
+        'Topic :: Software Development :: Libraries :: Python Modules',
+        'Programming Language :: Python :: Implementation :: PyPy',
+        'Programming Language :: Python :: Implementation :: CPython',
+    ], )

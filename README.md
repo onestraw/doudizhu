@@ -1,6 +1,9 @@
 # 斗地主引擎
+[![Build Status](https://travis-ci.org/onestraw/doudizhu.svg)](https://travis-ci.org/onestraw/doudizhu)
+[![Supported Python versions](https://img.shields.io/badge/Python-2%2C%203-green.svg)](https://pypi.org/project/doudizhu/)
+[![PyPI Version](https://img.shields.io/badge/PyPI-0.1.5-orange.svg)](https://pypi.org/project/doudizhu/)
 
-通过枚举37种细分牌型，制作一个花色无关、顺序无关的字典，能够在O(1)时间内判断出牌是否有效、比较大小。
+通过枚举37种细分牌型，制作一个花色无关、顺序无关的字典，字典规模大小是`34152`，能够在O(1)时间内判断出牌是否有效、比较大小。
 
 基于组合数学，设计思路见[详细文档](docs/engine.md)
 
