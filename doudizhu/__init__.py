@@ -1,5 +1,37 @@
 # -*- coding: utf-8 -*-
 
+#          //                            //  //            //
+#     //////    ////    //    //    //////      ////////  //////    //    //
+#  //    //  //    //  //    //  //    //  //      //    //    //  //    //
+# //    //  //    //  //    //  //    //  //    //      //    //  //    //
+#  //////    ////      //////    //////  //  ////////  //    //    //////
+
+"""
+斗地主引擎
+~~~~~~~~~~
+usage:
+    >>> import doudizhu
+    >>> cards_groups = doudizhu.new_game()
+    >>> cards_groups
+    [[44, 28, 27, ...], [14, 75, 139, ...], [13, 140, 76, ...], [73, 40, 136]]
+    >>> for cards_group in cards_groups:
+    ...     doudizhu.Card.print_pretty_cards(cards_group)
+    ...
+      [ 2 ❤ ] , [ 2 ♠ ] , [ A ♠ ] , ...
+      [ CJ  ] , [ A ♦ ] , [ A ♣ ] , ...
+      ...
+
+    >>> chain = doudizhu.Card.card_ints_from_string('3c-4d-5h-6s-7s-8h-9h')
+    >>> doudizhu.check_card_type(chain)
+    (True, [('solo_chain_7', 0)])
+
+    >>> doudizhu.cards_greater(chain[1:7], chain[:6])
+    (True, 'solo_chain_6')
+
+    >>> doudizhu.list_greater_cards(chain, cards_group[0])
+    {'solo_chain_7': [[39, 38, 37, 132, 19, 34, 33], [72, 39, 38, 37, 132, 19, 34]]}
+"""
+
 import random
 from .engine import Doudizhu
 from .card import Card

@@ -100,7 +100,7 @@ class Card(object):
         """give a string card rank, return four cards with suit"""
         if Card.is_joker(card):
             return [card]
-        return [card+suit for suit in ['s', 'h', 'd', 'c']]
+        return [card + suit for suit in ['s', 'h', 'd', 'c']]
 
     @staticmethod
     def get_rank_int(card_int):

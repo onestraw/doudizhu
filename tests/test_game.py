@@ -71,8 +71,8 @@ class TestDoudizhuGame(unittest.TestCase):
                    CardStrListToCardIntSet(['9h', '9s', '9c', '9d', '5s', '5h']),
                    CardStrListToCardIntSet(['9h', '9s', '9c', '9d', 'BJ', '5s']),
                    CardStrListToCardIntSet(['9h', '9s', '9c', '9d', 'CJ', '5s']),
-                   CardStrListToCardIntSet(['9h', '9s', '9c', '9d', 'BJ', 'CJ']),
-               ]}
+                   CardStrListToCardIntSet(['9h', '9s', '9c', '9d', 'BJ', 'CJ'])]
+               }
         ret = doudizhu.list_greater_cards(cards_target, cards_candidate)
         for card_type, cards_list in ret.items():
             ret[card_type] = [set(cards) for cards in cards_list]
@@ -83,8 +83,7 @@ class TestDoudizhuGame(unittest.TestCase):
         exp = {'bomb': [CardStrListToCardIntSet(['2h', '2s', '2d', '2c'])],
                'trio_solo': [
                    CardStrListToCardIntSet(['3d', '2h', '2s', '2d']),
-                   CardStrListToCardIntSet(['2h', '2s', '2d', 'BJ']),
-                   ]
+                   CardStrListToCardIntSet(['2h', '2s', '2d', 'BJ'])]
                }
         ret = doudizhu.list_greater_cards(cards_target, cards_candidate)
         for card_type, cards_list in ret.items():

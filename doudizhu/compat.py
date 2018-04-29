@@ -20,10 +20,7 @@ is_py2 = (_ver[0] == 2)
 is_py3 = (_ver[0] == 3)
 
 
-def empty_func(): pass
-
-
 if is_py3:
     from functools import cmp_to_key
 elif is_py2:
-    cmp_to_key = empty_func
+    cmp_to_key = None

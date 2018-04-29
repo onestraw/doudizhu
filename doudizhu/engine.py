@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+
 """
 斗地主规则检查及比较器
-    枚举所有37种牌型，制作一个花色无关、顺序无关的字典，
-    能够在O(1)时间内判断出牌是否有效，在O(1)时间内比较大小
+~~~~~~~~~~~~~~~~~~~~~
+枚举所有37种牌型，制作一个花色无关、顺序无关的字典，
+能够在O(1)时间内判断出牌是否有效，在O(1)时间内比较大小
 """
-
-
 import itertools
 import logging
 
@@ -22,10 +22,12 @@ CARD_TRIO = [[c] * 3 for c in CARDS_NO_JOKERS]
 CARD_FOUR = [[c] * 4 for c in CARDS_NO_JOKERS]
 
 
-def cards2str(cards): return '-'.join(cards)
+def cards2str(cards):
+    return '-'.join(cards)
 
 
-def str2cards(string): return string.split('-')
+def str2cards(string):
+    return string.split('-')
 
 
 def str2cardmap(string):
@@ -47,10 +49,9 @@ def sort_cards(cards):
 
 
 def order_repeat(cards, n):
-    """
-        按序重复每一个元素n次
-        ([a,b,c], 3)
-        -->[a,a,a,b,b,b,c,c,c]
+    """按序重复每一个元素n次
+    ([a,b,c], 3)
+    -->[a,a,a,b,b,b,c,c,c]
     """
     tmp = []
     for c in cards:
@@ -59,24 +60,20 @@ def order_repeat(cards, n):
 
 
 def put_sorted_cards(result, cards, weight):
-    """
-        cards is a list of card
-        sort, 2str, append
+    """cards is a list of card
+    sort, 2str, append
     """
     result.append((cards2str(sort_cards(cards)), weight))
 
 
 def enum_solo():
-    """
-        枚举所有单牌，并附加权重，以便比较大小
-    """
+    """枚举所有单牌，并附加权重，以便比较大小"""
     return [(c, w) for w, c in enumerate(CARDS)]
 
 
 def enum_solo_chain(length):
-    """
-        枚举所有单连顺，并附加权重
-        length 是连顺的张数，如5连
+    """枚举所有单连顺，并附加权重
+    length 是连顺的张数，如5连
     """
     if length < 5 or length > 12:
         raise ValueError('chain length is in [5,12]')
@@ -85,22 +82,18 @@ def enum_solo_chain(length):
     count = chain_range[0][1] - (length - chain_range[0][0])
 
     def solo_chain_x():
-        return [(cards2str(CARDS[i:i+length]), i) for i in range(count)]
+        return [(cards2str(CARDS[i:i + length]), i) for i in range(count)]
 
     return solo_chain_x
 
 
 def enum_pair():
-    """
-        枚举所有的对子
-    """
+    """枚举所有的对子"""
     return [(cards2str(pair), w) for w, pair in enumerate(CARD_PAIR)]
 
 
 def enum_pair_chain(length):
-    """
-        枚举所有的连对
-    """
+    """枚举所有的连对"""
     if length < 3 or length > 10:
         raise ValueError('chain length is in [3,10]')
 
@@ -108,7 +101,7 @@ def enum_pair_chain(length):
     count = chain_range[0][1] - (length - chain_range[0][0])
 
     def pair_chain_x():
-        solo_chain = [CARDS[i:i+length] for i in range(count)]
+        solo_chain = [CARDS[i:i + length] for i in range(count)]
         pair_chain = []
         for w, sc in enumerate(solo_chain):
             tmp = []
@@ -121,9 +114,7 @@ def enum_pair_chain(length):
 
 
 def enum_trio_chain(length):
-    """
-        枚举所有的三张及连三
-    """
+    """枚举所有的三张及连三"""
     if length < 1 or length > 7:
         raise ValueError('chain length is in [1,7]')
 
@@ -134,7 +125,7 @@ def enum_trio_chain(length):
         count -= 1
 
     def trio_chain_x():
-        solo_chain = [CARDS[i:i+length] for i in range(count)]
+        solo_chain = [CARDS[i:i + length] for i in range(count)]
         trio_chain = []
         for w, sc in enumerate(solo_chain):
             tmp = []
@@ -147,9 +138,7 @@ def enum_trio_chain(length):
 
 
 def enum_trio_solo():
-    """
-        枚举所有的三带一
-    """
+    """枚举所有的三带一"""
     result = []
     weight = 0
     for trio in CARD_TRIO:
@@ -163,34 +152,31 @@ def enum_trio_solo():
 
 
 def enum_trio_solo_chain(length):
-    """
-        x 连三连一
-        length >1
-    """
+    """x 连三连一"""
     if length < 2 or length > 5:
         raise ValueError('chain length is in [2,5]')
 
     def trio_solo_chain_x():
         result = []
         weight = 0
-        solo_chain = [CARDS[i:i+length] for i in range(13-length)]
+        solo_chain = [CARDS[i:i + length] for i in range(13 - length)]
         for chain in solo_chain:
             weight += 1
             trio_chain = order_repeat(chain, 3)
             avail_cards = [c for c in CARDS_NO_JOKERS if c not in set(chain)]
 
             # 1. select {BJ, CJ}
-            it = itertools.combinations_with_replacement(avail_cards, length-2)
+            it = itertools.combinations_with_replacement(avail_cards, length - 2)
             for e in it:
                 kicker = list(e) + ['BJ', 'CJ']
                 put_sorted_cards(result, trio_chain + kicker, weight)
             # 2. select BJ
-            it = itertools.combinations_with_replacement(avail_cards, length-1)
+            it = itertools.combinations_with_replacement(avail_cards, length - 1)
             for e in it:
                 kicker = list(e) + ['BJ']
                 put_sorted_cards(result, trio_chain + kicker, weight)
             # 3. select CJ
-            it = itertools.combinations_with_replacement(avail_cards, length-1)
+            it = itertools.combinations_with_replacement(avail_cards, length - 1)
             for e in it:
                 kicker = list(e) + ['CJ']
                 put_sorted_cards(result, trio_chain + kicker, weight)
@@ -209,9 +195,7 @@ def enum_trio_solo_chain(length):
 
 
 def enum_trio_pair_chain(length):
-    """
-        x 连三连一对
-    """
+    """x 连三连一对"""
     if length < 1 or length > 4:
         raise ValueError('chain length is in [1,4]')
 
@@ -235,7 +219,7 @@ def enum_trio_pair_chain(length):
         if length == 1:
             solo_chain = [[e] for e in CARDS_NO_JOKERS]
         else:
-            solo_chain = [CARDS[i:i+length] for i in range(13-length)]
+            solo_chain = [CARDS[i:i + length] for i in range(13 - length)]
 
         for chain in solo_chain:
             weight += 1
@@ -260,9 +244,7 @@ def enum_trio_pair_chain(length):
 
 
 def enum_four_two_solo():
-    """
-        四带二单
-    """
+    """四带二单"""
     result = []
     weight = 0
     for four in CARD_FOUR:
@@ -277,9 +259,7 @@ def enum_four_two_solo():
 
 
 def enum_four_two_pair():
-    """
-        四带二对
-    """
+    """四带二对"""
     result = []
     weight = 0
     for four in CARD_FOUR:
@@ -293,23 +273,21 @@ def enum_four_two_pair():
 
 
 def enum_bomb():
-    """
-        枚举所有的炸弹
-    """
+    """枚举所有的炸弹"""
     return [(cards2str(four), w) for w, four in enumerate(CARD_FOUR)]
 
 
 def enum_rocket():
-    """
-        返回王炸
-    """
+    """返回王炸"""
     return [('BJ-CJ', 0)]
 
 
 class Doudizhu(object):
-    """
-        枚举所有牌型，生成花色无关、顺序无关字典
-        提供斗地主规则检查及比较接口
+    """枚举所有牌型，生成花色无关、顺序无关字典
+    提供的接口:
+    - 规则检查
+    - 牌型大小比较
+    - 可出牌提示
     """
     CARD_TYPE = [
         {'name': 'solo', 'zh_name': u'单牌',
@@ -446,9 +424,7 @@ class Doudizhu(object):
 
     @staticmethod
     def check_card_type(cards):
-        """
-            cards is str type
-        """
+        """cards is str type"""
         if isinstance(cards, str):
             cards = str2cards(cards)
         if not isinstance(cards, list):
@@ -462,12 +438,11 @@ class Doudizhu(object):
 
     @staticmethod
     def type_greater(type_x, type_y):
-        """
-            check if x is greater than y
-            type_x/y: (type, weight)
-            >0: x > y
-            =0: x = y
-            <0: x < y
+        """check if x is greater than y
+        type_x/y: (type, weight)
+          >0: x > y
+          =0: x = y
+          <0: x < y
         """
         if type_x[0] == type_y[0]:
             return type_x[1] - type_y[1]
@@ -483,10 +458,9 @@ class Doudizhu(object):
 
     @staticmethod
     def cards_greater(cards_x, cards_y):
-        """
-            check if x is greater than y
-            x, y可能分别组成不同牌型
-            只要有x一种牌型大于y，就返回True和牌型
+        """check if x is greater than y
+        x, y可能分别组成不同牌型
+        只要有x一种牌型大于y，就返回True和牌型
         """
         ok, type_x = Doudizhu.check_card_type(cards_x)
         if not ok:

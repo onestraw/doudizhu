@@ -2,7 +2,7 @@ test:
 	PYTHONPATH=$PYTHONPATH:./ python -m pytest -s tests/ --showlocals
 
 check:
-	flake8 doudizhu/*.py
+	flake8 --ignore=E501,F401,E128,E402,E731,F821 doudizhu tests
 
 clean:
 	find . -name '*.pyc' -exec rm {} \;
