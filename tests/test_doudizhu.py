@@ -35,6 +35,38 @@ class TestDoudizhu(unittest.TestCase):
             print(case, '--', result)
             self.assertEqual(result, exp)
 
+    def test_list_candidate_cards(self):
+        # hand_cards, expected_result
+        test_cases = [
+            ('3-4-5-6', {
+                'solo': ['3', '4', '5', '6']
+            }),
+            ('3-4-5-6-7', {
+                'solo': ['3', '4', '5', '6', '7'],
+                'solo_chain_5': ['3-4-5-6-7']
+            }),
+            ('3-K-BJ-CJ', {
+                'solo': ['3', 'K', 'BJ', 'CJ'],
+                'rocket': ['BJ-CJ']
+            }),
+            ('2-2-BJ', {
+                'solo': ['2', 'BJ'],
+                'pair': ['2-2']
+            }),
+            ('2-2-2-2-3-BJ', {
+                'solo': ['3', '2', 'BJ'],
+                'pair': ['2-2'],
+                'trio': ['2-2-2'],
+                'trio_solo': ['3-2-2-2', '2-2-2-BJ'],
+                'four_two_solo': ['3-2-2-2-2-BJ'],
+                'bomb': ['2-2-2-2']
+            }),
+        ]
+        for case in test_cases:
+            hand_cards, exp = case
+            result = Doudizhu.list_candidate_cards(hand_cards)
+            self.assertEqual(result, exp)
+
     def test_compare_cards(self):
         # cards_x, cards_y, expected_result
         test_cases = [

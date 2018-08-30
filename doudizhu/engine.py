@@ -541,3 +541,27 @@ class Doudizhu(object):
             if not cards_gt[card_type]:
                 cards_gt.pop(card_type)
         return cards_gt
+
+    @staticmethod
+    def list_candidate_cards(hand_cards):
+        """ 从手牌hand_cards中找出所有能打的牌
+        eg: {'bomb': ['5-5-5-5', '6-6-6-6'], 'four_two_pair': ['5-5-5-5-6-6-6-6']}
+        """
+        hand_cards_cardmap = str2cardmap(hand_cards)
+        cards_result = {}
+
+        for card_type in Doudizhu.TYPE_CARDS.keys():
+            weight_gt = [w for w in Doudizhu.TYPE_CARDS[card_type].keys()]
+            if card_type not in cards_result:
+                cards_result[card_type] = []
+
+            for w in sorted(weight_gt):
+                for w_cards in Doudizhu.TYPE_CARDS[card_type][w]:
+                    w_cardmap = str2cardmap(w_cards)
+                    if Doudizhu.cards_contain(hand_cards_cardmap, w_cardmap) \
+                            and w_cards not in cards_result[card_type]:
+                        cards_result[card_type].append(w_cards)
+            if not cards_result[card_type]:
+                cards_result.pop(card_type)
+
+        return cards_result

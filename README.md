@@ -91,7 +91,7 @@
 
 ### 牌型提示
 ```python
->>> from doudizhu import Card, list_greater_cards
+>>> from doudizhu import Card, list_greater_cards, list_candidate_cards
 >>> def PrettyPrint(cards_gt):
 ...     for card_type, cards_list in cards_gt.items():
 ...         print('card type: {}'.format(card_type))
@@ -126,4 +126,14 @@ card type: trio_pair
   [ A ❤ ], [ A ♣ ], [ A ♠ ], [ 10 ❤ ], [ 10 ♠ ]
 card type: bomb
   [ 10 ♣ ], [ 10 ❤ ], [ 10 ♦ ], [ 10 ♠ ]
+>>>
+>>>
+>>> hand_cards = Card.card_ints_from_string('Ah-As-Kh')
+>>>
+>>> PrettyPrint(list_candidate_cards(hand_cards))
+card type: solo
+  [ A ❤ ]
+  [ K ❤ ]
+card type: pair
+  [ A ❤ ], [ A ♠ ]
 ```
