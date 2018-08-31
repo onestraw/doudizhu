@@ -81,14 +81,11 @@ def cards_greater(cards_x, cards_y):
     return Doudizhu.cards_greater(cards_x_no_suit, cards_y_no_suit)
 
 
-def list_greater_cards(cards_target, cards_candidate):
-    """ 对于目标牌组合cards_target
-    从候选牌cards_candidate中找出所有可以压制它的牌型
-    不区分花色，返回结果是一个字典{card_type:[greater_cards,],}
+def _render_cards_result(cards_result, cards_candidate):
+    """格式化出牌结果
+    将每种牌型的 str 出牌结构转换为 系统使用的 int 出牌结构
+    eg: {'bomb': ['5-5-5-5', '6-6-6-6']} => {'bomb': [[44, 28, 27, 43, 42], [48, 29, 47, 23, 45]]}
     """
-    ct_no_suit = Card.cards_without_suit(cards_target)
-    cc_no_suit = Card.cards_without_suit(cards_candidate)
-    cards_gt = Doudizhu.list_greater_cards(ct_no_suit, cc_no_suit)
 
     def render_suit(cards, candidate):
         result = set()
@@ -103,7 +100,7 @@ def list_greater_cards(cards_target, cards_candidate):
         return result
 
     result = {}
-    for card_type, cards_list in iter(cards_gt.items()):
+    for card_type, cards_list in iter(cards_result.items()):
         result[card_type] = []
         for cards in cards_list:
             cards_with_suit = render_suit(cards, cards_candidate)
@@ -113,5 +110,27 @@ def list_greater_cards(cards_target, cards_candidate):
     return result
 
 
-__all__ = ['Card', 'new_game', 'check_card_type',
-           'cards_greater', 'list_greater_cards']
+def list_greater_cards(cards_target, cards_candidate):
+    """ 对于目标牌组合cards_target
+    从候选牌cards_candidate中找出所有可以压制它的牌型
+    不区分花色，返回结果是一个字典{card_type:[greater_cards,],}
+    """
+    ct_no_suit = Card.cards_without_suit(cards_target)
+    cc_no_suit = Card.cards_without_suit(cards_candidate)
+    cards_gt = Doudizhu.list_greater_cards(ct_no_suit, cc_no_suit)
+
+    return _render_cards_result(cards_gt, cards_candidate)
+
+
+def list_candidate_cards(hand_cards):
+    """从手牌hand_cards中找出所有可以出的牌型
+    不区分花色，返回结果是一个字典{card_type:[candidate_cards,],}
+    """
+    cc_no_suit = Card.cards_without_suit(hand_cards)
+    cards_result = Doudizhu.list_candidate_cards(cc_no_suit)
+
+    return _render_cards_result(cards_result, hand_cards)
+
+
+__all__ = ['Card', 'new_game', 'check_card_type', 'cards_greater',
+           'list_greater_cards', 'list_candidate_cards']
