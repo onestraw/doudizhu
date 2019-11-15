@@ -514,6 +514,10 @@ class Doudizhu(object):
                 tmp_dict[card_type] = weight
         target_type = [(k, v) for k, v in iter(tmp_dict.items())]
 
+        # 如果目标牌型为rocket，则一定打不过，直接返回空
+        if target_type[0][0] == 'rocket':
+            return {}
+
         # 按牌型大小依次判断是否可用bomb, rocket
         if target_type[0][0] != 'rocket':
             if target_type[0][0] != 'bomb':
